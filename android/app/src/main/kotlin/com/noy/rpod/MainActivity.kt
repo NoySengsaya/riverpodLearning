@@ -1,4 +1,4 @@
-package com.noy.rpod.rpod
+package com.noy.rpod
 
 import io.flutter.embedding.android.FlutterActivity
 

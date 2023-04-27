@@ -43,14 +43,46 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.noy.rpod.rpod"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        applicationId "com.noy.rpod"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        dev {
+            flavorDimensions "version"
+            resValue "string", "app_name", "RPOD Dev"
+            versionName "${flutterVersionName}-dev-${flutterVersionCode.toInteger()}"
+            versionCode flutterVersionCode.toInteger()
+            applicationId "com.noy.rpod.dev"
+        }
+
+        sit {
+            flavorDimensions "version"
+            resValue "string", "app_name", "RPOD SIT"
+            versionName flutterVersionName
+            versionCode flutterVersionCode.toInteger()
+            applicationId "com.noy.rpod.sit"
+        }
+
+        uat {
+            flavorDimensions "version"
+            resValue "string", "app_name", "RPOD UAT"
+            versionName flutterVersionName
+            versionCode flutterVersionCode.toInteger()
+            applicationId "com.noy.rpod.uat"
+        }
+
+        prod {
+            flavorDimensions "version"
+            resValue "string", "app_name", "RPOD"
+            versionName flutterVersionName
+            versionCode flutterVersionCode.toInteger()
+            applicationId "com.noy.rpod"
+        }
     }
 
     buildTypes {
