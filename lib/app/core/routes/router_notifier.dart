@@ -15,6 +15,16 @@ class RouterNotifier extends AutoDisposeAsyncNotifier<void>
 
   @override
   FutureOr<void> build() async {
+    // final uid = await dp.get<SharedPrefsRepository>().getUid();
+
+    // t.info('uid: $uid');
+
+    // if (uid == '') {
+    //   isAuth = false;
+    // } else {
+    //   isAuth = true;
+    // }
+
     isAuth = false;
 
     ref.listenSelf((_, __) {
@@ -37,20 +47,12 @@ class RouterNotifier extends AutoDisposeAsyncNotifier<void>
 
     // redirect from splash location
     if (splashLocation) {
-      if (isAuth) {
-        return HomeScreen.path;
-      } else {
-        return LoginScreen.path;
-      }
+      return isAuth ? HomeScreen.path : LoginScreen.path;
     }
 
     // redirect from login location
     if (loginLocation) {
-      if (isAuth) {
-        return HomeScreen.path;
-      } else {
-        return LoginScreen.path;
-      }
+      return isAuth ? HomeScreen.path : LoginScreen.path;
     }
 
     return null;

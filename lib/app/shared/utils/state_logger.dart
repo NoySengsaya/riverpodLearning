@@ -4,9 +4,9 @@ import 'package:talker/talker.dart';
 
 import '../../../dp.dart';
 
-final t = dp.get<Talker>();
-
 class StateLogger extends ProviderObserver {
+  final t = dp.get<Talker>();
+
   @override
   void didUpdateProvider(
     ProviderBase<Object?> provider,

@@ -142,7 +142,7 @@ app.*.map.json
 
 # environment
 /env/
-/config/
+/config/*
 
 #key
 /keys/

@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'app/app.dart';
 import 'app/shared/utils/platform_type.dart';
 import 'app/shared/utils/state_logger.dart';
+import 'dp.dart';
 import 'env_config.dart';
 
 void main() async {
@@ -22,6 +23,9 @@ void main() async {
 
       // detect platform type
       final platformType = detectPlatformType();
+
+      // init dependencies injection
+      dpInit();
 
       runApp(
         ProviderScope(

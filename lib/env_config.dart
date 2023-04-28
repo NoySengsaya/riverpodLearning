@@ -16,4 +16,7 @@ class Env {
           defaultValue: 'dev',
         ),
       );
+
+  // get pocketbase url
+  static String get pbUrl => const String.fromEnvironment('FLUTTER_PB_URL');
 }

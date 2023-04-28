@@ -13,7 +13,6 @@ class App extends ConsumerWidget {
     // final currentLocale =
     // final currentThemeMode =
     return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
       routerConfig: router,
       builder: (context, child) {
         child = ResponsiveBreakpoints.builder(

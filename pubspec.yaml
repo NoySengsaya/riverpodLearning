@@ -30,6 +30,9 @@ dependencies:
   screen_utils: ^0.0.1
   responsive_framework: ^1.0.0
   rive: ^0.10.4
+  flutter_secure_storage: ^8.0.0
+  pointycastle: ^3.7.3
+  hex: ^0.2.0
 
 dev_dependencies:
   flutter_test:

@@ -1,0 +1,1 @@
+export 'locals/locals.dart';
