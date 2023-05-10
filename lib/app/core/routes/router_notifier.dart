@@ -3,29 +3,34 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rpod/app/core/api/pocketbase_provider.dart';
+import 'package:talker/talker.dart';
 
+import '../../../dp.dart';
 import '../../features/auth/auth.dart';
+import '../../features/auth/presentation/riverpod/login_provider.dart';
+import '../../features/feeds/feeds.dart';
 import '../../features/home/home.dart';
+import '../../features/profile/profile.dart';
 import '../../features/splash/splash.dart';
+import '../../shared/repositories/repositories.dart';
 
 class RouterNotifier extends AutoDisposeAsyncNotifier<void>
     implements Listenable {
   VoidCallback? routerListener;
   bool isAuth = false;
 
+  final t = dp.get<Talker>();
+
   @override
   FutureOr<void> build() async {
-    // final uid = await dp.get<SharedPrefsRepository>().getUid();
-
-    // t.info('uid: $uid');
-
-    // if (uid == '') {
-    //   isAuth = false;
-    // } else {
-    //   isAuth = true;
-    // }
-
-    isAuth = false;
+    isAuth = await ref.watch(pocketbaseProvider.selectAsync((data) {
+      if (data != null) {
+        return true;
+      } else {
+        return false;
+      }
+    }));
 
     ref.listenSelf((_, __) {
       // One could write more conditional logic for when to call redirection
@@ -45,17 +50,25 @@ class RouterNotifier extends AutoDisposeAsyncNotifier<void>
     // splash location
     final splashLocation = state.location == SplashScreen.path;
 
+    // home location
+    final homeLocation = state.location == HomeScreen.path;
+
     // redirect from splash location
     if (splashLocation) {
       return isAuth ? HomeScreen.path : LoginScreen.path;
     }
 
     // redirect from login location
-    if (loginLocation) {
+    else if (loginLocation) {
       return isAuth ? HomeScreen.path : LoginScreen.path;
     }
+    // redirect from home location on logout
 
-    return null;
+    else if (homeLocation) {
+      return isAuth ? HomeScreen.path : LoginScreen.path;
+    } else {
+      return null;
+    }
   }
 
   /// all available app routes
@@ -77,6 +90,18 @@ class RouterNotifier extends AutoDisposeAsyncNotifier<void>
         GoRoute(
           path: HomeScreen.path,
           builder: (context, state) => const HomeScreen(),
+        ),
+
+        // feeds
+        GoRoute(
+          path: FeedsScreen.path,
+          builder: (context, state) => const FeedsScreen(),
+        ),
+
+        // profile
+        GoRoute(
+          path: ProfileScreen.path,
+          builder: (context, state) => const ProfileScreen(),
         ),
       ];
 

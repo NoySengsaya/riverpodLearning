@@ -1,40 +1,33 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketbase/pocketbase.dart';
+import 'package:rpod/app/core/api/pocketbase_provider.dart';
 import 'package:talker/talker.dart';
 
 import '../../../../../dp.dart';
 import '../../../../../env_config.dart';
+import '../../../../shared/repositories/repositories.dart';
 
-class LoginNotifier extends AutoDisposeAsyncNotifier<void> {
-  // get login data
+TextEditingController usernameController = TextEditingController();
+FocusNode userNameFocusNode = FocusNode();
 
-  // pocketbase
-  final pb = PocketBase(Env.pbUrl);
+TextEditingController passwordController = TextEditingController();
+FocusNode passwordFocusNode = FocusNode();
 
-  final t = dp.get<Talker>();
+final showPasswordProvider = ChangeNotifierProvider<ToggleShowPasswordProvider>(
+  (ref) => ToggleShowPasswordProvider(),
+);
+// showed password
+bool isObsecure = true;
 
-  @override
-  FutureOr<void> build() async {
-    // await login();
-  }
+class ToggleShowPasswordProvider extends ChangeNotifier {
+  bool? get isObsecured => isObsecure;
 
-  // perform login
-  Future<void> login() async {
-    try {
-      final authData = await pb
-          .collection('users')
-          .authWithPassword('nss3lue', 'p@ssw0rd123');
+  void toggleShowPassword() {
+    isObsecure = !isObsecure;
 
-      t.info(authData);
-    } catch (e) {
-      t.error(e);
-      rethrow;
-    }
+    return notifyListeners();
   }
 }
-
-final loginProvider = AutoDisposeAsyncNotifierProvider<LoginNotifier, void>(
-  () => LoginNotifier(),
-);

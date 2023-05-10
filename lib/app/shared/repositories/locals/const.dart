@@ -1,6 +1,8 @@
 class PrefsKey {
   // token || uid
   static const uid = 'app_user_uid_key';
+  static const appAccessToken = 'app_access_token_key';
+  static const appAccessModels = 'app_access_models_key';
 
   // user data
   static const uData = 'app_user_data_key';

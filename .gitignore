@@ -142,14 +142,11 @@ app.*.map.json
 
 # environment
 /env/
-/config/*
+/config/
 
 #key
 /keys/
 /android/key.properties
 *.key.json
-
-# develop sensitive constants
-/lib/app/core/values/strings/sensitive_constants.dart
 
 /Obfuscated/*

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pocketbase/pocketbase.dart';
 import 'package:talker/talker.dart';
 
 import '../../../../dp.dart';
@@ -8,6 +11,18 @@ import 'const.dart';
 import 'secure_storage.dart';
 
 abstract class SharedPrefsRepository {
+  // save access token
+  Future<void> saveToken(String token);
+
+  // get access token
+  Future<String> getToken();
+
+  // save access models
+  Future<void> saveAccessModel(RecordModel model);
+
+  // get accesss models
+  Future<RecordModel?> getAccessModel();
+
   // save uid
   Future<void> saveUid(String uid);
 
@@ -95,6 +110,50 @@ class SharedPrefsRepositoryImpl extends SharedPrefsRepository {
       }
     } catch (e) {
       t.error(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<RecordModel?> getAccessModel() async {
+    try {
+      final jsonData = await prefsBox.get(PrefsKey.appAccessModels);
+      if (jsonData != null) {
+        final data = RecordModel.fromJson(json.decode(jsonData));
+        return data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      t.error(e);
+      return null;
+    }
+  }
+
+  @override
+  Future<String> getToken() async {
+    try {
+      return await getEncrypted(PrefsKey.appAccessToken) ?? '';
+    } catch (e) {
+      t.error(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> saveAccessModel(RecordModel model) async {
+    try {
+      await prefsBox.put(PrefsKey.appAccessModels, model.toString());
+    } catch (e) {
+      t.error(e);
+    }
+  }
+
+  @override
+  Future<void> saveToken(String token) async {
+    try {
+      await setEncrypted(PrefsKey.appAccessToken, token);
+    } catch (e) {
       rethrow;
     }
   }
