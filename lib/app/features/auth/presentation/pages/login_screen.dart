@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rpod/app/core/api/pocketbase_provider.dart';
+import 'package:rpod/app/features/auth/auth.dart';
 
 import '../riverpod/login_provider.dart';
 
@@ -13,7 +15,7 @@ class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // watch provider
-    final provider = ref.watch(pocketbaseProvider);
+    ref.watch(pocketbaseProvider);
 
     final isObsecured = ref.watch(showPasswordProvider).isObsecured;
 
@@ -91,13 +93,30 @@ class LoginScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
+              InkWell(
+                onTap: () => context.push(RegisterScreen.path),
+                child: Text(
+                  'register',
+                  style: TextStyle(color: Colors.teal, fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => ref.read(pocketbaseProvider.notifier).login(
-                      usernameController.text.trim(),
-                      passwordController.text.trim(),
-                    ),
+                onPressed: () async {
+                  ref.read(pocketbaseProvider.notifier).login(
+                        usernameController.text.trim(),
+                        passwordController.text.trim(),
+                      );
+
+                  usernameController.clear();
+                  passwordController.clear();
+                },
                 style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
-                child: const Text('Login'),
+                child: const Text(
+                  'Login',
+                  style: TextStyle(fontSize: 18),
+                ),
               ),
             ],
           ),

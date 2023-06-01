@@ -11,7 +11,7 @@ class SplashScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = ref.watch(splashProvider);
+    ref.watch(splashProvider);
 
     return Scaffold(
       body: SafeArea(

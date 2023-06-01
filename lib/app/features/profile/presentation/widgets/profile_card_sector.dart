@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:rpod/app/shared/utils/username_color.dart';
 
 class ProfileCardSector extends StatelessWidget {
   const ProfileCardSector({
@@ -9,6 +10,7 @@ class ProfileCardSector extends StatelessWidget {
     this.profileUrl,
     this.userName,
     this.name,
+    this.onEdit,
   });
 
   final String? profileUrl;
@@ -17,14 +19,17 @@ class ProfileCardSector extends StatelessWidget {
 
   final String? name;
 
+  final void Function()? onEdit;
+
   @override
   Widget build(BuildContext context) {
-    String svgCode = RandomAvatarString('Mr.Noy555', trBackground: false);
+    String svgCode =
+        RandomAvatarString(userName ?? 'random.profile', trBackground: false);
     return Card(
       elevation: 1,
       margin: EdgeInsets.zero,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        padding: const EdgeInsets.all(5),
         child: Column(
           children: [
             Row(
@@ -42,11 +47,21 @@ class ProfileCardSector extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        userName ?? '',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: getUserNameColor(userName, colors),
+                        ),
+                        child: Text(
+                          userName ?? '',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       Text(
@@ -57,6 +72,14 @@ class ProfileCardSector extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: onEdit,
+                  icon: Icon(
+                    Icons.edit_outlined,
+                    size: 24,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
               ],

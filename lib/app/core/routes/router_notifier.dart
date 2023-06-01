@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pocketbase/pocketbase.dart';
 import 'package:rpod/app/core/api/pocketbase_provider.dart';
 import 'package:talker/talker.dart';
 
@@ -25,6 +26,7 @@ class RouterNotifier extends AutoDisposeAsyncNotifier<void>
   @override
   FutureOr<void> build() async {
     isAuth = await ref.watch(pocketbaseProvider.selectAsync((data) {
+      debugPrint('route auth data: ==> $data');
       if (data != null) {
         return true;
       } else {
@@ -47,11 +49,16 @@ class RouterNotifier extends AutoDisposeAsyncNotifier<void>
     // login location
     final loginLocation = state.location == LoginScreen.path;
 
+    // register location
+    final registerLocation = state.location == RegisterScreen.path;
+
     // splash location
     final splashLocation = state.location == SplashScreen.path;
 
     // home location
     final homeLocation = state.location == HomeScreen.path;
+
+    t.info('isAuth: $isAuth');
 
     // redirect from splash location
     if (splashLocation) {
@@ -62,8 +69,13 @@ class RouterNotifier extends AutoDisposeAsyncNotifier<void>
     else if (loginLocation) {
       return isAuth ? HomeScreen.path : LoginScreen.path;
     }
-    // redirect from home location on logout
 
+    // redirect from register location
+    else if (registerLocation) {
+      return isAuth ? HomeScreen.path : RegisterScreen.path;
+    }
+
+    // redirect from home location on logout
     else if (homeLocation) {
       return isAuth ? HomeScreen.path : LoginScreen.path;
     } else {
@@ -102,6 +114,23 @@ class RouterNotifier extends AutoDisposeAsyncNotifier<void>
         GoRoute(
           path: ProfileScreen.path,
           builder: (context, state) => const ProfileScreen(),
+          routes: [
+            GoRoute(
+              path: ProfileEditScreen.path,
+              name: 'profile-edit',
+              builder: (context, state) => const ProfileEditScreen(),
+            ),
+            GoRoute(
+              path: ProfileInfoScreen.path,
+              name: 'profile-info',
+              builder: (context, state) {
+                final record = state.extra as RecordModel;
+                return ProfileInfoScreen(
+                  record: record,
+                );
+              },
+            ),
+          ],
         ),
       ];
 

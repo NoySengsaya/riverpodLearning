@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pocketbase/pocketbase.dart';
+import 'package:rpod/app/features/home/home.dart';
 import 'package:rpod/env_config.dart';
 import 'package:talker/talker.dart';
 
@@ -41,8 +44,11 @@ class PocketBaseProvider extends AutoDisposeAsyncNotifier<String?> {
   /// perform login
   Future<void> login(String name, String password) async {
     try {
+      t.info('loggin in as: ==> $name $password');
       final authData =
           await pb.collection('users').authWithPassword(name, password);
+
+      t.info('auth data: ==> $authData');
       _healthy = true;
       _userName = authData.record?.data['name'].toString() ?? '';
 
@@ -72,6 +78,7 @@ class PocketBaseProvider extends AutoDisposeAsyncNotifier<String?> {
       if (model != null) {
         pb.authStore.save(token, model);
 
+        // if auth store confirm to pocketbase is invalid logged out
         if (!pb.authStore.isValid) {
           state = const AsyncValue.data(null);
           return null;
@@ -82,6 +89,7 @@ class PocketBaseProvider extends AutoDisposeAsyncNotifier<String?> {
         state = AsyncValue.data(token);
         return pb.authStore.token;
       } else {
+        t.info('model == null');
         state = const AsyncValue.data(null);
         return null;
       }
@@ -101,6 +109,46 @@ class PocketBaseProvider extends AutoDisposeAsyncNotifier<String?> {
 
       state = const AsyncValue.data(null);
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// register
+  ///
+  /// perform user registrations
+  Future<void> register(
+    BuildContext context, {
+    required String username,
+    String? name,
+    required String password,
+    required String passwordConfirm,
+    String? email,
+    String? phone,
+    String? avatar,
+  }) async {
+    try {
+      final data = {
+        "username": username,
+        "email": email ?? '',
+        "emailVisibility": true,
+        "password": password,
+        "passwordConfirm": passwordConfirm,
+        "name": name,
+        "phone": phone,
+      };
+
+      final record = await pb.collection('users').create(body: data);
+
+      t.info('registered record: ==> ${record.data}');
+
+      // (optional) send an email verification request
+      if (email != null) {
+        await pb.collection('users').requestVerification(email);
+      }
+
+      await login(username, password);
+    } catch (e) {
+      t.error('error: ==> ${e}');
       rethrow;
     }
   }
